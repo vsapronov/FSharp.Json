@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Null Safety
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="F# JSON Reflection based serialization library"/>
+    <meta name="author" content="vsapronov"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/FSharp.Json/content/style.css" />
+    <script type="text/javascript" src="/FSharp.Json/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/vsapronov/FSharp.Json">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharp.Json/index.html">FSharp.Json</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+<h1><a name="Null-Safety" class="anchor" href="#Null-Safety">Null Safety</a></h1>
+<p>FSharp.Json is null safe.
+This means that library will never deserialize JSON into anything with null value.
+FSharp.Json treats option types as an instruction that value could be null in JSON.
+For example member of type <code>string</code> can't get null value in FSharp.Json, however <code>string option</code> member can have <code>None</code> value which is translated into null in JSON.
+Same logic applies to all types supported by FSharp.Json library.
+See examples in sections below.</p>
+<h2><a name="Deserialization-of-null" class="anchor" href="#Deserialization-of-null">Deserialization of null</a></h2>
+<p>In the example below <code>stringMember</code> member can't be assigned to null even though F# allows string to be null:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="k">type</span> <span class="i">RecordType</span> <span class="o">=</span> {
+    <span class="i">stringMember</span><span class="o">:</span> <span class="i">string</span>
+}
+
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;{&quot;stringMember&quot;:null}&quot;&quot;&quot;</span>
+
+<span class="c">// this attempt to deserialize will throw exception </span>
+<span class="k">let</span> <span class="i">deserialized</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">RecordType</span><span class="o">&gt;</span> <span class="i">json</span>
+</code></pre></td>
+</tr>
+</table>
+<p>What if the member <code>stringMember</code> could be null in JSON?
+In such case the record type should explictly use string option type:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="k">type</span> <span class="i">RecordType</span> <span class="o">=</span> {
+    <span class="i">stringMember</span><span class="o">:</span> <span class="i">string</span> <span class="i">option</span>
+}
+
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;{&quot;stringMember&quot;:null}&quot;&quot;&quot;</span>
+
+<span class="c">// this attempt to deserialize will work fine</span>
+<span class="k">let</span> <span class="i">deserialized</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">RecordType</span><span class="o">&gt;</span> <span class="i">json</span>
+
+<span class="c">// deserialized.stringMember equals to None</span>
+<span class="i">printfn</span> <span class="s">&quot;%A&quot;</span> <span class="i">deserialized</span>
+</code></pre></td>
+</tr>
+</table>
+<p>Same logic applies to all types.
+If value could be null or missing in JSON then F# type used for corresponding member should be option.</p>
+<h2><a name="Customization-of-null-deserialization" class="anchor" href="#Customization-of-null-deserialization">Customization of null deserialization</a></h2>
+<p>What is the difference between missing field in JSON and field assigned to null?
+By default FSharp.Json library treats both cases as None, however you can customize this logic.
+Behaviour that is used to treat option types could be configured:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="k">type</span> <span class="i">RecordType</span> <span class="o">=</span> {
+    <span class="i">stringMember</span><span class="o">:</span> <span class="i">string</span> <span class="i">option</span>
+}
+
+<span class="c">// this will work fine by default even when option field is missing </span>
+<span class="k">let</span> <span class="i">deserialized1</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">RecordType</span><span class="o">&gt;</span> <span class="s">&quot;{}&quot;</span>
+
+<span class="c">// create config that require option None to be represented as null</span>
+<span class="k">let</span> <span class="i">config</span> <span class="o">=</span> <span class="i">JsonConfig</span><span class="o">.</span><span class="i">create</span>(<span class="i">deserializeOption</span> <span class="o">=</span> <span class="i">DeserializeOption</span><span class="o">.</span><span class="i">RequireNull</span>)
+
+<span class="c">// this will throw exception since config in use requires null for None deserialization.</span>
+<span class="k">let</span> <span class="i">deserialized2</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserializeEx</span><span class="o">&lt;</span><span class="i">RecordType</span><span class="o">&gt;</span> <span class="i">config</span> <span class="s">&quot;{}&quot;</span>
+</code></pre></td>
+</tr>
+</table>
+<h2><a name="Serialization-of-None" class="anchor" href="#Serialization-of-None">Serialization of None</a></h2>
+<p>If some member of <code>option</code> type has None value it will be serialized into JSON null by default:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="k">type</span> <span class="i">RecordType</span> <span class="o">=</span> {
+    <span class="i">stringMember</span><span class="o">:</span> <span class="i">string</span> <span class="i">option</span>
+}
+
+<span class="c">// stringMember has None value</span>
+<span class="k">let</span> <span class="i">data</span> <span class="o">=</span> { <span class="i">RecordType</span><span class="o">.</span><span class="i">stringMember</span> <span class="o">=</span> <span class="i">None</span> }
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serialize</span> <span class="i">data</span>
+<span class="i">printfn</span> <span class="s">&quot;%s&quot;</span> <span class="i">json</span>
+<span class="c">// json is: &quot;&quot;&quot;{ &quot;stringMember&quot;: null }&quot;&quot;&quot;</span>
+</code></pre></td>
+</tr>
+</table>
+<h2><a name="Customization-of-None-serialization" class="anchor" href="#Customization-of-None-serialization">Customization of None serialization</a></h2>
+<p>The one can control how None values are respresented in JSON through config.
+Example belows shows how to omit members with None values:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="k">type</span> <span class="i">RecordType</span> <span class="o">=</span> {
+    <span class="i">stringMember</span><span class="o">:</span> <span class="i">string</span> <span class="i">option</span>
+}
+
+<span class="c">// stringMember has None value</span>
+<span class="k">let</span> <span class="i">data</span> <span class="o">=</span> { <span class="i">RecordType</span><span class="o">.</span><span class="i">stringMember</span> <span class="o">=</span> <span class="i">None</span> }
+
+<span class="c">// create config that omits null values</span>
+<span class="k">let</span> <span class="i">config</span> <span class="o">=</span> <span class="i">JsonConfig</span><span class="o">.</span><span class="i">create</span>(<span class="i">serializeNone</span> <span class="o">=</span> <span class="i">SerializeNone</span><span class="o">.</span><span class="i">Omit</span>)
+
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serializeEx</span> <span class="i">config</span> <span class="i">data</span>
+<span class="i">printfn</span> <span class="s">&quot;%s&quot;</span> <span class="i">json</span>
+<span class="c">// json is: &quot;&quot;&quot;{}&quot;&quot;&quot;</span>
+</code></pre></td>
+</tr>
+</table>
+
+
+        </div>
+        <div class="span3">
+          <img src="/FSharp.Json/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharp.Json</li>
+            <li><a href="/FSharp.Json/index.html">Home page</a></li>
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharp.Json/index.html">Basic Example</a></li>
+            <li><a href="/FSharp.Json/null_safety.html">Null Safety</a></li>
+            <li><a href="/FSharp.Json/reference/index.html">API Reference</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/FSharp.Json">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/vsapronov/FSharp.Json">Source Code on GitHub</a></li>
+            <li><a href="/FSharp.Json/license.html">License</a></li>
+            <li><a href="/FSharp.Json/release-notes.html">Release Notes</a></li>           
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vsapronov/FSharp.Json"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>
