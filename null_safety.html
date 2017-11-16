@@ -102,8 +102,7 @@ In such case the record type should explictly use string option type:</p>
 </code></pre></td>
 </tr>
 </table>
-<p>Same logic applies to all types.
-If value could be null or missing in JSON then F# type used for corresponding member should be option.</p>
+<p>If value could be null or missing in JSON then F# type used for corresponding member should be option.</p>
 <h2><a name="Customization-of-null-deserialization" class="anchor" href="#Customization-of-null-deserialization">Customization of null deserialization</a></h2>
 <p>What is the difference between missing field in JSON and field assigned to null?
 By default FSharp.Json library treats both cases as None, however you can customize this logic.
@@ -123,6 +122,9 @@ Behaviour that is used to treat option types could be configured:</p>
 <span class="l">13: </span>
 <span class="l">14: </span>
 <span class="l">15: </span>
+<span class="l">16: </span>
+<span class="l">17: </span>
+<span class="l">18: </span>
 </pre></td>
 <td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
 <span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
@@ -133,6 +135,9 @@ Behaviour that is used to treat option types could be configured:</p>
 
 <span class="c">// this will work fine by default even when option field is missing </span>
 <span class="k">let</span> <span class="i">deserialized1</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">RecordType</span><span class="o">&gt;</span> <span class="s">&quot;{}&quot;</span>
+
+<span class="i">printfn</span> <span class="s">&quot;%A&quot;</span> <span class="i">deserialized1</span>
+<span class="c">// deserialized1.stringMember equals to None</span>
 
 <span class="c">// create config that require option None to be represented as null</span>
 <span class="k">let</span> <span class="i">config</span> <span class="o">=</span> <span class="i">JsonConfig</span><span class="o">.</span><span class="i">create</span>(<span class="i">deserializeOption</span> <span class="o">=</span> <span class="i">DeserializeOption</span><span class="o">.</span><span class="i">RequireNull</span>)
