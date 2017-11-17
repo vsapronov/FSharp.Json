@@ -34,59 +34,47 @@
         <div class="span9" id="main">
           
 <h1><a name="FSharp-Json-JSON-Serialization-Library" class="anchor" href="#FSharp-Json-JSON-Serialization-Library">FSharp.Json: JSON Serialization Library</a></h1>
-<p>Here's basic example of FSharp.Json usage:</p>
-<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
-<span class="l"> 2: </span>
-<span class="l"> 3: </span>
-<span class="l"> 4: </span>
-<span class="l"> 5: </span>
-<span class="l"> 6: </span>
-<span class="l"> 7: </span>
-<span class="l"> 8: </span>
-<span class="l"> 9: </span>
-<span class="l">10: </span>
-<span class="l">11: </span>
-<span class="l">12: </span>
-<span class="l">13: </span>
-<span class="l">14: </span>
-<span class="l">15: </span>
-<span class="l">16: </span>
-<span class="l">17: </span>
-<span class="l">18: </span>
-<span class="l">19: </span>
-<span class="l">20: </span>
-</pre></td>
-<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
-<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
-
-<span class="c">// Your record type</span>
-<span class="k">type</span> <span class="i">RecordType</span> <span class="o">=</span> {
-    <span class="i">stringMember</span><span class="o">:</span> <span class="i">string</span>
-    <span class="i">intMember</span><span class="o">:</span> <span class="i">int</span>
-}
-
-<span class="k">let</span> <span class="i">data</span><span class="o">:</span> <span class="i">RecordType</span> <span class="o">=</span> { <span class="i">stringMember</span> <span class="o">=</span> <span class="s">&quot;The string&quot;</span>; <span class="i">intMember</span> <span class="o">=</span> <span class="n">123</span> }
-
-<span class="c">// serialize record into JSON</span>
-<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serialize</span> <span class="i">data</span>
-<span class="i">printfn</span> <span class="s">&quot;%s&quot;</span> <span class="i">json</span>
-<span class="c">// json is &quot;&quot;&quot;{ &quot;stringMember&quot;: &quot;The string&quot;, &quot;intMember&quot;: 123 }&quot;&quot;&quot;</span>
-
-<span class="c">// deserialize from JSON to record</span>
-<span class="k">let</span> <span class="i">deserialized</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">RecordType</span><span class="o">&gt;</span> <span class="i">json</span>
-<span class="i">printfn</span> <span class="s">&quot;%A&quot;</span> <span class="i">deserialized</span>
-<span class="c">// deserialized is {stringMember = &quot;some value&quot;; intMember = 123;}</span>
-</code></pre></td>
-</tr>
-</table>
-<h2><a name="Documentation" class="anchor" href="#Documentation">Documentation</a></h2>
-<p>The library comes with following documentation.</p>
+<p>FSharp.Json is F# JSON serialization library based on Reflection it's written in F# for F#.</p>
+<p>Find <a href="basic_example.html">basic usage example</a> to get an idea how to use the library.</p>
+<h2><a name="Why" class="anchor" href="#Why">Why?</a></h2>
+<p>Why we need yet another F# JSON serialization library?
+Well, if you happy with the library that you are using currently then probably you do not need another one.
+There are several available options to choose from:</p>
 <ul>
-<li>
-<a href="reference/index.html">API Reference</a> contains automatically generated documentation for all types, modules
-and functions in the library.
-</li>
+<li><a href="http://fsharp.github.io/FSharp.Data/library/JsonProvider.html">JSON Type Provider</a></li>
+<li><a href="https://www.newtonsoft.com/json">Json.Net aka Newtonsoft.Json</a></li>
+<li><a href="https://github.com/xyncro/chiron">Chiron</a></li>
+<li><a href="https://github.com/PeteProgrammer/JsonFSharp">JsonFSharp</a></li>
+<li>Let me know what library I missed here</li>
 </ul>
+<p>While all of these libraries do provide some good functionality all of them seem to have a weakness.
+Some of them are written in C# without out of the box support for F# types.
+Additionally null safety is alien concept in C# however it is a must in F#.
+Other libraries provide only low-level functionality leaving a lot of cumbersome coding work to library user.
+The type provider library forces developer to define JSON schema in form of json examples which is far from convenient way of defining schemas.</p>
+<p>FSharp.Json was developed with these values in mind:</p>
+<ul>
+<li>Easy to use API</li>
+<li>Automatic mapping of F# types into JSON</li>
+<li>Out of the box support for F# types</li>
+<li>Null safety</li>
+</ul>
+<h2><a name="How" class="anchor" href="#How">How?</a></h2>
+<p>FSharp.Json is pure F# library.
+It uses <a href="https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/reflection">Reflection</a> to get information about F# types at runtime.
+The code from <a href="http://fsharp.github.io/FSharp.Data/">FSharp.Data library</a> is used for parsing JSON.
+The <a href="http://fsharp.github.io/FSharp.Data/reference/fsharp-data-jsonvalue.html">JsonValue type</a> is internalized in the FSharp.Json library.
+The core of FSharp.Json library is located in single <a href="https://github.com/vsapronov/FSharp.Json/blob/master/src/FSharp.Json/Core.fs">Core.fs file</a>.</p>
+<h2><a name="Documentation" class="anchor" href="#Documentation">Documentation</a></h2>
+<p>Following pages are describing main features and aspects of FSharp.Json:</p>
+<ul>
+<li><a href="basic_example.html">Basic Usage Example</a></li>
+<li><a href="fields_naming.html">Fields Naming</a></li>
+<li><a href="null_safety.html">Null Safety</a></li>
+</ul>
+<p>Each feature of FSharp.Json is thoroughly covered by <a href="https://github.com/vsapronov/FSharp.Json/tree/master/tests/FSharp.Json.Tests">unit tests</a>.</p>
+<p><a href="reference/index.html">API Reference</a> contains automatically generated documentation for all types, modules
+and functions in the library.</p>
 <h2><a name="Contributing-and-copyright" class="anchor" href="#Contributing-and-copyright">Contributing and copyright</a></h2>
 <p>The project is hosted on <a href="https://github.com/vsapronov/FSharp.Json">GitHub</a> where you can <a href="https://github.com/vsapronov/FSharp.Json/issues">report issues</a>, fork
 the project and submit pull requests. If you're adding a new public API, please also
@@ -103,7 +91,7 @@ redistribution for both commercial and non-commercial purposes. For more informa
             <li class="nav-header">FSharp.Json</li>
             <li><a href="/FSharp.Json/index.html">Home page</a></li>
             <li class="nav-header">Documentation</li>
-            <li><a href="/FSharp.Json/index.html">Basic Example</a></li>
+            <li><a href="/FSharp.Json/basic_example.html">Basic Example</a></li>
             <li><a href="/FSharp.Json/fields_naming.html">Fields Naming</a></li>
             <li><a href="/FSharp.Json/null_safety.html">Null Safety</a></li>
             <li class="divider"></li>
