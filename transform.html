@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Type Transform
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="F# JSON Reflection based serialization library"/>
+    <meta name="author" content="vsapronov"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/FSharp.Json/content/style.css" />
+    <script type="text/javascript" src="/FSharp.Json/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/vsapronov/FSharp.Json">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharp.Json/index.html">FSharp.Json</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+<h1><a name="Type-Transform" class="anchor" href="#Type-Transform">Type Transform</a></h1>
+<p><a href="supported_types.html">Supported types</a> page maps F# types into JSON types.
+What if some data needed to be represented as a different type then the default JSON type?
+If changing type of the member in F# is not an option then type transform can help.</p>
+<p>Any data member is translated F# Type -&gt; JSON type by <a href="supported_types.html">default</a> types mapping.
+<a href="reference/fsharp-json-itypetransform.html">Type Transform</a> is applied in the middle of this translation: F# Type -&gt; Alternative F# Type -&gt; JSON type.
+Alternative F# Type -&gt; JSON type is still done by default types mapping, type transform is responsible for F# Type -&gt; Alternative F# Type.</p>
+<p>The <a href="reference/fsharp-json-transforms.html">Transforms</a> module contains transforms that are defined by FSharp.Json library.
+You can define your own transforms by implementing <a href="reference/fsharp-json-itypetransform.html">ITypeTransform interface</a>.</p>
+<h2><a name="DateTime-as-epoch-time" class="anchor" href="#DateTime-as-epoch-time">DateTime as epoch time</a></h2>
+<p>Let's imagine that some DateTime member should be represented as <a href="https://en.wikipedia.org/wiki/Unix_time">epoch time</a> in JSON.
+Epoch time is int64 however it is still convenient to work with DateTime in F# code.
+In such case <a href="reference/fsharp-json-transforms-datetimeepoch.html">DateTimeEpoch transform</a> is useful.
+You can see it's implementation <a href="https://github.com/vsapronov/FSharp.Json/blob/master/src/FSharp.Json/Transforms.fs">here</a>.</p>
+<p>Here's an example of DateTimeEpoch transform usage:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">System</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="c">// value will be represented as epoch time in JSON</span>
+<span class="k">type</span> <span class="i">DateTimeRecord</span> <span class="o">=</span> {
+    [&lt;<span class="i">JsonField</span>(<span class="i">Transform</span><span class="o">=</span><span class="i">typeof</span><span class="o">&lt;</span><span class="i">Transforms</span><span class="o">.</span><span class="i">DateTimeEpoch</span><span class="o">&gt;</span>)&gt;]
+    <span class="i">value</span><span class="o">:</span> <span class="i">DateTime</span>
+}
+
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serialize</span> { <span class="i">DateTimeRecord</span><span class="o">.</span><span class="i">value</span> <span class="o">=</span> <span class="k">new</span> <span class="i">DateTime</span>(<span class="n">2017</span>, <span class="n">11</span>, <span class="n">5</span>, <span class="n">22</span>, <span class="n">50</span>, <span class="n">45</span>) }
+<span class="c">// json is &quot;&quot;&quot;{&quot;value&quot;:1509922245}&quot;&quot;&quot;</span>
+
+<span class="k">let</span> <span class="i">deserialized</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">DateTimeRecord</span><span class="o">&gt;</span> <span class="i">json</span>
+<span class="c">// deserialized is { DateTimeRecord.value = new DateTime(2017, 11, 5, 22, 50, 45) }</span>
+</code></pre></td>
+</tr>
+</table>
+<h2><a name="Transform-by-default" class="anchor" href="#Transform-by-default">Transform by default</a></h2>
+<p>To be developed....</p>
+
+
+        </div>
+        <div class="span3">
+          <img src="/FSharp.Json/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharp.Json</li>
+            <li><a href="/FSharp.Json/index.html">Home page</a></li>
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharp.Json/basic_example.html">Basic Example</a></li>
+            <li><a href="/FSharp.Json/supported_types.html">Supported Types</a></li>
+            <li><a href="/FSharp.Json/fields_naming.html">Fields Naming</a></li>
+            <li><a href="/FSharp.Json/null_safety.html">Null Safety</a></li>
+            <li><a href="/FSharp.Json/transform.html">Type Transform</a></li>
+            <li class="divider"></li>
+            <li><a href="/FSharp.Json/reference/index.html">API Reference</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/FSharp.Json">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/vsapronov/FSharp.Json">Source Code on GitHub</a></li>
+            <li><a href="/FSharp.Json/license.html">License</a></li>
+            <li><a href="/FSharp.Json/release-notes.html">Release Notes</a></li>           
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vsapronov/FSharp.Json"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>
