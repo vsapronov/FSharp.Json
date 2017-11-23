@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Basic Usage Example
+    <title>Supported Types
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content="F# JSON Reflection based serialization library"/>
@@ -33,52 +33,49 @@
       <div class="row">
         <div class="span9" id="main">
           
-<h1><a name="Basic-Usage-Example" class="anchor" href="#Basic-Usage-Example">Basic Usage Example</a></h1>
-<p>Here's basic example of FSharp.Json usage:</p>
-<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
-<span class="l"> 2: </span>
-<span class="l"> 3: </span>
-<span class="l"> 4: </span>
-<span class="l"> 5: </span>
-<span class="l"> 6: </span>
-<span class="l"> 7: </span>
-<span class="l"> 8: </span>
-<span class="l"> 9: </span>
-<span class="l">10: </span>
-<span class="l">11: </span>
-<span class="l">12: </span>
-<span class="l">13: </span>
-<span class="l">14: </span>
-<span class="l">15: </span>
-<span class="l">16: </span>
-<span class="l">17: </span>
-<span class="l">18: </span>
-<span class="l">19: </span>
-<span class="l">20: </span>
-</pre></td>
-<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
-<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
-
-<span class="c">// Your record type</span>
-<span class="k">type</span> <span class="i">RecordType</span> <span class="o">=</span> {
-    <span class="i">stringMember</span><span class="o">:</span> <span class="i">string</span>
-    <span class="i">intMember</span><span class="o">:</span> <span class="i">int</span>
-}
-
-<span class="k">let</span> <span class="i">data</span><span class="o">:</span> <span class="i">RecordType</span> <span class="o">=</span> { <span class="i">stringMember</span> <span class="o">=</span> <span class="s">&quot;The string&quot;</span>; <span class="i">intMember</span> <span class="o">=</span> <span class="n">123</span> }
-
-<span class="c">// serialize record into JSON</span>
-<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serialize</span> <span class="i">data</span>
-<span class="i">printfn</span> <span class="s">&quot;%s&quot;</span> <span class="i">json</span>
-<span class="c">// json is &quot;&quot;&quot;{ &quot;stringMember&quot;: &quot;The string&quot;, &quot;intMember&quot;: 123 }&quot;&quot;&quot;</span>
-
-<span class="c">// deserialize from JSON to record</span>
-<span class="k">let</span> <span class="i">deserialized</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">RecordType</span><span class="o">&gt;</span> <span class="i">json</span>
-<span class="i">printfn</span> <span class="s">&quot;%A&quot;</span> <span class="i">deserialized</span>
-<span class="c">// deserialized is {stringMember = &quot;some value&quot;; intMember = 123;}</span>
-</code></pre></td>
-</tr>
-</table>
+<h1><a name="Supported-Types" class="anchor" href="#Supported-Types">Supported Types</a></h1>
+<p>Here's full list of F# types that are supported by FSharp.Json library.</p>
+<h2><a name="int" class="anchor" href="#int">int</a></h2>
+<p>Represented as <code>number</code> in JSON.</p>
+<h2><a name="int64" class="anchor" href="#int64">int64</a></h2>
+<p>Represented as <code>number</code> in JSON.</p>
+<h2><a name="float" class="anchor" href="#float">float</a></h2>
+<p>Represented as <code>number</code> in JSON.</p>
+<h2><a name="decimal" class="anchor" href="#decimal">decimal</a></h2>
+<p>Represented as <code>number</code> in JSON.</p>
+<h2><a name="string" class="anchor" href="#string">string</a></h2>
+<p>Represented as <code>string</code> in JSON.</p>
+<h2><a name="bool" class="anchor" href="#bool">bool</a></h2>
+<p>Represented as <code>bool</code> in JSON.</p>
+<h2><a name="DateTime" class="anchor" href="#DateTime">DateTime</a></h2>
+<p>Represented as <code>string</code> according to <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>.
+Could be represented as <code>number</code> epoch time using <a href="transform.html">transform</a>.</p>
+<h2><a name="DateTimeOffset" class="anchor" href="#DateTimeOffset">DateTimeOffset</a></h2>
+<p>Represented as <code>string</code> according to <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>.
+Could be represented as <code>number</code> epoch time using <a href="transform.html">transform</a>.</p>
+<h2><a name="Guid" class="anchor" href="#Guid">Guid</a></h2>
+<p>Represented as <code>string</code>.</p>
+<h2><a name="Enum" class="anchor" href="#Enum">Enum</a></h2>
+<p>Represented as string that is enum member name.
+Could be represented as enum member id.
+Read more on <a href="enums.html">Enums</a> page.</p>
+<h2><a name="option" class="anchor" href="#option">option</a></h2>
+<p>Option is not represented by itself.
+None value might be represented as <code>null</code> or omitted.
+Read more on <a href="null_safety.html">Null Safety</a> page.</p>
+<h2><a name="tuple" class="anchor" href="#tuple">tuple</a></h2>
+<p>Tuples are represented as <code>list</code> in JSON.</p>
+<h2><a name="record" class="anchor" href="#record">record</a></h2>
+<p>Records are represented as <code>object</code> in JSON.</p>
+<h2><a name="map" class="anchor" href="#map">map</a></h2>
+<p>Map is represented as <code>object</code> in JSON.</p>
+<h2><a name="array" class="anchor" href="#array">array</a></h2>
+<p>Array is represented as <code>list</code> in JSON.</p>
+<h2><a name="list" class="anchor" href="#list">list</a></h2>
+<p>List is represented as <code>list</code> in JSON.</p>
+<h2><a name="union" class="anchor" href="#union">union</a></h2>
+<p>Unions are represented as <code>object</code> with special structure in JSON.
+Read more on <a href="unions.html">Unions</a> page.</p>
 
 
         </div>
