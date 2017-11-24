@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Unions
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="F# JSON Reflection based serialization library"/>
+    <meta name="author" content="vsapronov"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/FSharp.Json/content/style.css" />
+    <script type="text/javascript" src="/FSharp.Json/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/vsapronov/FSharp.Json">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharp.Json/index.html">FSharp.Json</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+<h1><a name="Unions" class="anchor" href="#Unions">Unions</a></h1>
+<p>JSON format does not support any data structure similiar to <a href="https://fsharpforfunandprofit.com/posts/discriminated-unions/">F# discriminated unions</a>.
+Though it is still possible to represent union in JSON in some reasonable way.
+By deafault FSharp.Json serializes union into JSON object with the only one field.
+Name of the field corresponds to the union case. Value of the field corresponds to the union case value.</p>
+<p>Here's some example of default union serialization:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="k">type</span> <span class="i">TheUnion</span> <span class="o">=</span>
+| <span class="i">OneFieldCase</span> <span class="k">of</span> <span class="i">string</span>
+| <span class="i">ManyFieldsCase</span> <span class="k">of</span> <span class="i">string</span><span class="o">*</span><span class="i">int</span>
+
+<span class="k">let</span> <span class="i">data</span> <span class="o">=</span> <span class="i">OneFieldCase</span> <span class="s">&quot;The string&quot;</span>
+
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serialize</span> <span class="i">data</span>
+<span class="c">// json is &quot;&quot;&quot;{&quot;OneFieldCase&quot;:&quot;The string&quot;}&quot;&quot;&quot;</span>
+
+<span class="k">let</span> <span class="i">deserialized</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">TheUnion</span><span class="o">&gt;</span> <span class="i">json</span>
+<span class="c">// deserialized is OneFieldCase(&quot;The string&quot;)</span>
+</code></pre></td>
+</tr>
+</table>
+<h2><a name="Changing-union-case-key" class="anchor" href="#Changing-union-case-key">Changing union case key</a></h2>
+<p>The string that represents union case key could be changed with <a href="reference/fsharp-json-jsonunioncase.html">JsonUnionCase attribute</a>.</p>
+<p>See the example below:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="c">// OneFieldCase is attributed to be &quot;case1&quot; in JSON</span>
+<span class="k">type</span> <span class="i">TheUnion</span> <span class="o">=</span>
+| [&lt;<span class="i">JsonUnionCase</span>(<span class="i">Case</span><span class="o">=</span><span class="s">&quot;case1&quot;</span>)&gt;] <span class="i">OneFieldCase</span> <span class="k">of</span> <span class="i">string</span>
+| <span class="i">ManyFieldsCase</span> <span class="k">of</span> <span class="i">string</span><span class="o">*</span><span class="i">int</span>
+
+<span class="k">let</span> <span class="i">data</span> <span class="o">=</span> <span class="i">OneFieldCase</span> <span class="s">&quot;The string&quot;</span>
+
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serialize</span> <span class="i">data</span>
+<span class="c">// json is &quot;&quot;&quot;{&quot;case1&quot;:&quot;The string&quot;}&quot;&quot;&quot;</span>
+
+<span class="k">let</span> <span class="i">deserialized</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">TheUnion</span><span class="o">&gt;</span> <span class="i">json</span>
+<span class="c">// deserialized is OneFieldCase(&quot;The string&quot;)</span>
+</code></pre></td>
+</tr>
+</table>
+<h2><a name="Union-modes" class="anchor" href="#Union-modes">Union modes</a></h2>
+<p>All examples above are describing default serialization of union into JSON.
+This mode is known as "case key as a field name" mode.
+There's another <a href="reference/fsharp-json-unionmode.html">union mode</a> that represents union as JSON object with two fields.
+One field is for case key and another one is for case value. This mode is called "case key as a field value"
+If this mode is used then names of these two field should be provided through <a href="reference/fsharp-json-jsonunion.html">JsonUnion attribute</a>.</p>
+<p>See the example below:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="c">// The union will be represented as JSON object with two fields: casekey and casevalue.</span>
+[&lt;<span class="i">JsonUnion</span>(<span class="i">Mode</span> <span class="o">=</span> <span class="i">UnionMode</span><span class="o">.</span><span class="i">CaseKeyAsFieldValue</span>, <span class="i">CaseKeyField</span><span class="o">=</span><span class="s">&quot;casekey&quot;</span>, <span class="i">CaseValueField</span><span class="o">=</span><span class="s">&quot;casevalue&quot;</span>)&gt;]
+<span class="k">type</span> <span class="i">TheUnion</span> <span class="o">=</span>
+| <span class="i">OneFieldCase</span> <span class="k">of</span> <span class="i">string</span>
+| <span class="i">ManyFieldsCase</span> <span class="k">of</span> <span class="i">string</span><span class="o">*</span><span class="i">int</span>
+
+<span class="k">let</span> <span class="i">data</span> <span class="o">=</span> <span class="i">OneFieldCase</span> <span class="s">&quot;The string&quot;</span>
+
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serialize</span> <span class="i">data</span>
+<span class="c">// json is &quot;&quot;&quot;{&quot;casekey&quot;:&quot;OneFieldCase&quot;, &quot;casevalue&quot;:&quot;The string&quot;}&quot;&quot;&quot;</span>
+
+<span class="k">let</span> <span class="i">deserialized</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">TheUnion</span><span class="o">&gt;</span> <span class="i">json</span>
+<span class="c">// deserialized is OneFieldCase(&quot;The string&quot;)</span>
+</code></pre></td>
+</tr>
+</table>
+
+
+        </div>
+        <div class="span3">
+          <img src="/FSharp.Json/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharp.Json</li>
+            <li><a href="/FSharp.Json/index.html">Home page</a></li>
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharp.Json/basic_example.html">Basic Example</a></li>
+            <li><a href="/FSharp.Json/supported_types.html">Supported Types</a></li>
+            <li><a href="/FSharp.Json/fields_naming.html">Fields Naming</a></li>
+            <li><a href="/FSharp.Json/null_safety.html">Null Safety</a></li>
+            <li><a href="/FSharp.Json/enums.html">Enums</a></li>
+            <li><a href="/FSharp.Json/unions.html">Unions</a></li>
+            <li><a href="/FSharp.Json/transform.html">Type Transform</a></li>
+            <li class="divider"></li>
+            <li><a href="/FSharp.Json/reference/index.html">API Reference</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/FSharp.Json">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/vsapronov/FSharp.Json">Source Code on GitHub</a></li>
+            <li><a href="/FSharp.Json/license.html">License</a></li>
+            <li><a href="/FSharp.Json/release-notes.html">Release Notes</a></li>           
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vsapronov/FSharp.Json"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>
