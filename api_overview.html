@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>JsonPathItem - FSharp.Json</title>
+    <title>API Overview
+</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content=""/>
+    <meta name="description" content="F# JSON Reflection based serialization library"/>
     <meta name="author" content="vsapronov"/>
 
     <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
@@ -32,65 +33,33 @@
       <div class="row">
         <div class="span9" id="main">
           
+<h1><a name="API-Overview" class="anchor" href="#API-Overview">API Overview</a></h1>
+<p>Most of API functions are defined in <a href="reference/fsharp-json-json.html">Json module</a>.</p>
+<p>Easiest way to serialize is to call <code>Json.serialize</code> function.
+It serializes any supported F# type to string containing JSON.</p>
+<p>Similarly easiest way to deserialize is to call <code>Json.deserialize&lt;'T&gt;</code> function.
+It takes string containing JSON and returns instance of type 'T.</p>
+<h2><a name="Advanced-functions" class="anchor" href="#Advanced-functions">Advanced functions</a></h2>
+<p>Functions <code>Json.serialize</code> and <code>Json.deserialize</code> are using default configuration.
+Whenever custom configuration should be used following functions are useful:</p>
+<ul>
+<li><code>Json.serializeEx</code></li>
+<li><code>Json.deserializeEx&lt;'T&gt;</code></li>
+</ul>
+<p>Prefix <code>Ex</code> stands for "extended". Both of these functions take <a href="reference/fsharp-json-jsonconfig.html">JsonConfig</a> instance as a first parameter.</p>
+<h2><a name="Configuration" class="anchor" href="#Configuration">Configuration</a></h2>
+<p><a href="reference/fsharp-json-jsonconfig.html">JsonConfig</a> represents global configuration of serialization.
+There's convenient way to override default configuration by using <code>JsonConfig.create</code> function.
+All parameters of the function are optional and those that are provided override default values.</p>
+<p>Examples of how to create and use JsonConfig could be found on pages discussing corresponding features.
+For example, custom <code>jsonFieldNaming</code> could be found <a href="fields_naming.html#Change-all-fields-names">here</a>.</p>
+<h2><a name="Unformatted-JSON" class="anchor" href="#Unformatted-JSON">Unformatted JSON</a></h2>
+<p>Some products like <a href="https://spark.apache.org/">Apache Spark</a> require unformatted JSON in a single line.
+It is usefull to produce unformatted single line JSON in some other scenarios.
+There is a function to produce unformatted JSON: <code>Json.serializeU</code>.
+<code>U</code> stands for "unformatted". It has the same signature as <code>Json.serialize</code> function.
+The function is a shorthand to using <code>unformatted</code> member on <a href="reference/fsharp-json-jsonconfig.html">JsonConfig</a>.</p>
 
-
-
-<h1>JsonPathItem</h1>
-<p>
-  <span>Namespace: FSharp.Json</span><br />
-</p>
-<div class="xmldoc">
-<p>Represents one item in <a href="fsharp-json-jsonpath.html" title="JsonPath">JsonPath</a></p>
-
-</div>
-  <h3>Union Cases</h3>
-  <table class="table table-bordered member-list">
-    <thead>
-      <tr><td>Union Case</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '44', 44)" onmouseover="showTip(event, '44', 44)">
-            ArrayItem(int)
-          </code>
-          <div class="tip" id="44">
-            <strong>Signature:</strong> int<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L80-80" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Item in JSON array.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '45', 45)" onmouseover="showTip(event, '45', 45)">
-            Field(string)
-          </code>
-          <div class="tip" id="45">
-            <strong>Signature:</strong> string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L78-78" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Field in JSON object.</p>
-
-
-        </td>
-      </tr>
-    </tbody>
-  </table>
 
         </div>
         <div class="span3">
