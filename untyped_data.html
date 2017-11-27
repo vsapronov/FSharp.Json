@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Basic Usage Example
+    <title>Untyped Data
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content="F# JSON Reflection based serialization library"/>
@@ -33,8 +33,13 @@
       <div class="row">
         <div class="span9" id="main">
           
-<h1><a name="Basic-Usage-Example" class="anchor" href="#Basic-Usage-Example">Basic Usage Example</a></h1>
-<p>Here's basic example of FSharp.Json usage:</p>
+<h1><a name="Untyped-Data" class="anchor" href="#Untyped-Data">Untyped Data</a></h1>
+<p>Using obj type in F# code is bad code smell.
+Though FSharp.Json can serialize and deserialize structures without type information.
+For allowing obj type in serialization/deserialization allowUntyped flag should be set to <code>true</code> on <a href="reference/fsharp-json-jsonconfig.html">JsonConfig</a>.</p>
+<h2><a name="Serialization-of-obj" class="anchor" href="#Serialization-of-obj">Serialization of obj</a></h2>
+<p>When serializing obj FSharp.Json uses real run time type.</p>
+<p>Check this example:</p>
 <table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
 <span class="l"> 2: </span>
 <span class="l"> 3: </span>
@@ -52,30 +57,65 @@
 <span class="l">15: </span>
 <span class="l">16: </span>
 <span class="l">17: </span>
-<span class="l">18: </span>
-<span class="l">19: </span>
-<span class="l">20: </span>
 </pre></td>
 <td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
 <span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
 
-<span class="c">// Your record type</span>
-<span class="k">type</span> <span class="i">RecordType</span> <span class="o">=</span> {
-    <span class="i">stringMember</span><span class="o">:</span> <span class="i">string</span>
-    <span class="i">intMember</span><span class="o">:</span> <span class="i">int</span>
+<span class="c">// Record type with obj member</span>
+<span class="k">type</span> <span class="i">ObjectRecord</span> <span class="o">=</span> {
+    <span class="i">value</span><span class="o">:</span> <span class="i">obj</span>
 }
 
-<span class="k">let</span> <span class="i">data</span><span class="o">:</span> <span class="i">RecordType</span> <span class="o">=</span> { <span class="i">stringMember</span> <span class="o">=</span> <span class="s">&quot;The string&quot;</span>; <span class="i">intMember</span> <span class="o">=</span> <span class="n">123</span> }
+<span class="c">// Set string value to obj member</span>
+<span class="k">let</span> <span class="i">data</span> <span class="o">=</span> { <span class="i">ObjectRecord</span><span class="o">.</span><span class="i">value</span> <span class="o">=</span> <span class="s">&quot;The string&quot;</span> }
 
-<span class="c">// serialize record into JSON</span>
-<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serialize</span> <span class="i">data</span>
-<span class="i">printfn</span> <span class="s">&quot;%s&quot;</span> <span class="i">json</span>
-<span class="c">// json is &quot;&quot;&quot;{ &quot;stringMember&quot;: &quot;The string&quot;, &quot;intMember&quot;: 123 }&quot;&quot;&quot;</span>
+<span class="c">// Need to allow untyped data</span>
+<span class="k">let</span> <span class="i">config</span> <span class="o">=</span> <span class="i">JsonConfig</span><span class="o">.</span><span class="i">create</span>(<span class="i">allowUntyped</span> <span class="o">=</span> <span class="k">true</span>)
 
-<span class="c">// deserialize from JSON to record</span>
-<span class="k">let</span> <span class="i">deserialized</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">RecordType</span><span class="o">&gt;</span> <span class="i">json</span>
-<span class="i">printfn</span> <span class="s">&quot;%A&quot;</span> <span class="i">deserialized</span>
-<span class="c">// deserialized is {stringMember = &quot;some value&quot;; intMember = 123;}</span>
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serializeEx</span> <span class="i">config</span> <span class="i">data</span>
+<span class="c">// json is &quot;&quot;&quot;{&quot;value&quot;: &quot;The string&quot;}&quot;&quot;&quot;</span>
+<span class="c">// value was serialized as string because it was assigned to string</span>
+</code></pre></td>
+</tr>
+</table>
+<h2><a name="Deserialization-of-obj" class="anchor" href="#Deserialization-of-obj">Deserialization of obj</a></h2>
+<p>When deserializing obj FSharp.Json assumes the type from JSON.</p>
+<p>See example below:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+<span class="l">17: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="c">// Record type with obj member</span>
+<span class="k">type</span> <span class="i">ObjectRecord</span> <span class="o">=</span> {
+    <span class="i">value</span><span class="o">:</span> <span class="i">obj</span>
+}
+
+<span class="c">// value is assigned to string</span>
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;{&quot;value&quot;: &quot;The string&quot;}&quot;&quot;&quot;</span>
+
+<span class="c">// Need to allow untyped data</span>
+<span class="k">let</span> <span class="i">config</span> <span class="o">=</span> <span class="i">JsonConfig</span><span class="o">.</span><span class="i">create</span>(<span class="i">allowUntyped</span> <span class="o">=</span> <span class="k">true</span>)
+
+<span class="k">let</span> <span class="i">data</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserializeEx</span><span class="o">&lt;</span><span class="i">ObjectRecord</span><span class="o">&gt;</span> <span class="i">config</span> <span class="i">json</span>
+<span class="c">// data is { ObjectRecord.value = &quot;The string&quot; }</span>
+<span class="c">// value was deserialized as string because it was string in JSON</span>
 </code></pre></td>
 </tr>
 </table>

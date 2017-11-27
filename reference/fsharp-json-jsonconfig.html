@@ -53,18 +53,18 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '18', 18)" onmouseover="showTip(event, '18', 18)">
-            deserializeOption
+            allowUntyped
           </code>
           <div class="tip" id="18">
-            <strong>Signature:</strong> DeserializeOption<br />
+            <strong>Signature:</strong> bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L139-139" class="github-link">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L147-147" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Controls deserialization of option types.</p>
+          <p>Allows untyped data, like obj. Default is false.</p>
 
 
         </td>
@@ -73,18 +73,18 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '19', 19)" onmouseover="showTip(event, '19', 19)">
-            jsonFieldNaming
+            deserializeOption
           </code>
           <div class="tip" id="19">
-            <strong>Signature:</strong> JsonFieldNaming<br />
+            <strong>Signature:</strong> DeserializeOption<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L141-141" class="github-link">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L143-143" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Sets JSON fields naming strategy.</p>
+          <p>Controls deserialization of option types. Default is DeserializeOption.AllowOmit.</p>
 
 
         </td>
@@ -93,18 +93,78 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '20', 20)" onmouseover="showTip(event, '20', 20)">
-            serializeNone
+            enumValue
           </code>
           <div class="tip" id="20">
+            <strong>Signature:</strong> EnumMode<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L149-149" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Controls serialization of enums. Default is EnumMode.Name</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '21', 21)" onmouseover="showTip(event, '21', 21)">
+            jsonFieldNaming
+          </code>
+          <div class="tip" id="21">
+            <strong>Signature:</strong> JsonFieldNaming<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L145-145" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sets JSON fields naming strategy. Default is <code>id</code> function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22', 22)" onmouseover="showTip(event, '22', 22)">
+            serializeNone
+          </code>
+          <div class="tip" id="22">
             <strong>Signature:</strong> SerializeNone<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L137-137" class="github-link">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L141-141" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Controls serialization of option None value.</p>
+          <p>Controls serialization of option None value. Default is SerializeNone.Null.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '23', 23)" onmouseover="showTip(event, '23', 23)">
+            unformatted
+          </code>
+          <div class="tip" id="23">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L139-139" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Generates unformatted JSON if set to true. Default is false.</p>
 
 
         </td>
@@ -120,15 +180,15 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '21', 21)" onmouseover="showTip(event, '21', 21)">
+          <code onmouseout="hideTip(event, '24', 24)" onmouseover="showTip(event, '24', 24)">
             create(...)
           </code>
-          <div class="tip" id="21">
-            <strong>Signature:</strong> (serializeNone:SerializeNone option * deserializeOption:DeserializeOption option * jsonFieldNaming:JsonFieldNaming option) -&gt; JsonConfig<br />
+          <div class="tip" id="24">
+            <strong>Signature:</strong> (unformatted:bool option * serializeNone:SerializeNone option * deserializeOption:DeserializeOption option * jsonFieldNaming:JsonFieldNaming option * allowUntyped:bool option * enumValue:EnumMode option) -&gt; JsonConfig<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L145-145" class="github-link">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L153-153" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -140,15 +200,15 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '22', 22)" onmouseover="showTip(event, '22', 22)">
+          <code onmouseout="hideTip(event, '25', 25)" onmouseover="showTip(event, '25', 25)">
             Default
           </code>
-          <div class="tip" id="22">
+          <div class="tip" id="25">
             <strong>Signature:</strong> JsonConfig<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L152-152" class="github-link">
+            <a href="https://github.com/vsapronov/FSharp.Json/tree/master/src/FSharp.Json/InterfaceTypes.fs#L163-163" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -176,6 +236,7 @@
             <li><a href="/FSharp.Json/enums.html">Enums</a></li>
             <li><a href="/FSharp.Json/unions.html">Unions</a></li>
             <li><a href="/FSharp.Json/transform.html">Type Transform</a></li>
+            <li><a href="/FSharp.Json/untyped_data.html">Untyped Data</a></li>
             <li class="divider"></li>
             <li><a href="/FSharp.Json/reference/index.html">API Reference</a></li>
             <li class="divider"></li>
