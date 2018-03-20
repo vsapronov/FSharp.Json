@@ -82,8 +82,58 @@ You can see it's implementation <a href="https://github.com/vsapronov/FSharp.Jso
 </code></pre></td>
 </tr>
 </table>
-<h2><a name="Transform-by-default" class="anchor" href="#Transform-by-default">Transform by default</a></h2>
-<p>To be developed....</p>
+<h2><a name="System-Uri-as-string" class="anchor" href="#System-Uri-as-string">System.Uri as string</a></h2>
+<p>This transformer transforms a Uri to/from a string for serialization. On deserialization, the string value is
+handed to the System.Uri constructor. When the URI string is malformed, a UriFormatException might be thrown.
+Example use:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+<span class="l">17: </span>
+<span class="l">18: </span>
+<span class="l">19: </span>
+<span class="l">20: </span>
+<span class="l">21: </span>
+<span class="l">22: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;FSharp.Json.dll&quot;</span>
+<span class="k">open</span> <span class="i">System</span>
+<span class="k">open</span> <span class="i">FSharp</span><span class="o">.</span><span class="i">Json</span>
+
+<span class="c">// value will be represented as epoch time in JSON</span>
+<span class="k">type</span> <span class="i">UriRecord</span> <span class="o">=</span> {
+    [&lt;<span class="i">JsonField</span>(<span class="i">Transform</span><span class="o">=</span><span class="i">typeof</span><span class="o">&lt;</span><span class="i">Transforms</span><span class="o">.</span><span class="i">UriTransform</span><span class="o">&gt;</span>)&gt;]
+    <span class="i">value</span><span class="o">:</span> <span class="i">Uri</span>
+}
+
+<span class="k">let</span> <span class="i">json</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">serialize</span> { <span class="i">UriRecord</span><span class="o">.</span><span class="i">value</span> <span class="o">=</span> <span class="i">Uri</span>(<span class="s">&quot;http://localhost:8080/&quot;</span>) }
+<span class="c">// json is &quot;&quot;&quot;{&quot;value&quot;:&quot;http://localhost:8080/&quot;}&quot;&quot;&quot;</span>
+
+<span class="k">let</span> <span class="i">deserialized</span> <span class="o">=</span> <span class="i">Json</span><span class="o">.</span><span class="i">deserialize</span><span class="o">&lt;</span><span class="i">UriRecord</span><span class="o">&gt;</span> <span class="i">json</span>
+<span class="c">// deserialized is { UriRecord.value = Uri(&quot;http://localhost:8080/&quot;) }</span>
+
+<span class="c">(*</span>
+<span class="c">Transform by default</span>
+<span class="c">--------------------</span>
+
+<span class="c">To be developed....</span>
+<span class="c">*)</span>
+</code></pre></td>
+</tr>
+</table>
 
 
         </div>
