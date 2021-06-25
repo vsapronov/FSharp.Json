@@ -1,6 +1,9 @@
 .idea/
 .vs/
-.vscode/
-bin
-obj
+bin/
+obj/
+out/
 *.DotSettings.user
+.ionide/
+packages/
+paket-files/
